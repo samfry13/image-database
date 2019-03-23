@@ -1,10 +1,14 @@
 import React, { Component } from "react";
-import Item from "./Item";
+import ItemsList from "./ItemsList";
 
 class Content extends Component {
   state = {};
   render() {
-    return <Item />;
+    return (
+      <div className="content">
+        <ItemsList />
+      </div>
+    );
   }
 }
 

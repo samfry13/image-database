@@ -1,33 +1,130 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* ---------- Header Section ---------- */
+.header {
+  overflow: hidden;
+  background-color: #f1f1f1;
+  padding: 20px 10px;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-wrap: wrap;
 }
 
-.App-link {
-  color: #61dafb;
+.header_title {
+  text-align: center;
+  flex-grow: 4;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.header .spacer {
+  flex-basis: 60px;
+  flex-shrink: 5;
+}
+
+.login {
+  flex-basis: 60px;
+}
+
+/* ---------- Filter Section ---------- */
+.filter {
+  margin: auto;
+  width: 840px;
+}
+
+.filter_input {
+  display: inline-flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.filter_input .spacer {
+  flex-basis: 60px;
+}
+
+.tags_filter {
+  min-width: 340px;
+  display: inline-block;
+  margin-right: 20px;
+  flex-shrink: 1;
+}
+
+.search {
+  min-width: 260px;
+}
+
+.tags_filter_select,
+.search_box {
+  min-width: 200px;
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.tags_list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 5px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: baseline;
+  min-width: 30px;
+  margin: 0px 10px;
+  line-height: 1;
+}
+
+.tag_img {
+  width: 15px;
+  height: 15px;
+}
+
+/* ---------- Content Section ---------- */
+.content {
+  background-color: burlywood;
+  margin: 20px auto;
+}
+
+.items_list {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: auto;
+}
+
+.item {
+  display: inline-flex;
+  background-color: beige;
+  padding: 20px;
+  margin: 10px;
+  width: 400px;
+}
+
+@media screen and (max-width: 839px) {
+  .content,
+  .filter {
+    width: 420px;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media screen and (min-width: 840px) and (max-width: 1259px) {
+  .content,
+  .filter {
+    width: 840px;
   }
+}
+
+@media screen and (min-width: 1260px) {
+  .content {
+    width: 1260px;
+  }
+}
+
+.item_img {
+  max-width: 100px;
+  height: 100%;
+  padding-right: 10px;
 }

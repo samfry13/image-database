@@ -1,18 +1,16 @@
 import React, { Component } from "react";
 import "./App.css";
-import Search from "./components/Search";
-import Login from "./components/Login";
-import TagFilter from "./components/TagFilter";
+import Header from "./components/Header";
+import Filter from "./components/Filter";
 import Content from "./components/Content";
 
 class App extends Component {
+  state = {};
   render() {
     return (
       <div className="App">
-        <h1>Database</h1>
-        <Login />
-        <TagFilter />
-        <Search />
+        <Header />
+        <Filter />
         <Content />
       </div>
     );

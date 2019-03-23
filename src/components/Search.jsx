@@ -4,10 +4,10 @@ class Search extends Component {
   state = {};
   render() {
     return (
-      <form>
-        <input type="text" name="search_box" placeholder="Search" />
+      <div className="search">
+        <input type="text" className="search_box" placeholder="Search" />
         <button type="button">Go</button>
-      </form>
+      </div>
     );
   }
 }

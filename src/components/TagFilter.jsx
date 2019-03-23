@@ -4,14 +4,16 @@ class TagFilter extends Component {
   state = {};
   render() {
     return (
-      <form>
-        <label for="tags_filter">Filter Tags:</label>
-        <select>
+      <div className="tags_filter">
+        <select className="tags_filter_select">
           <option value="dress">Dress</option>
           <option value="shirt">Shirt</option>
           <option value="pants">Pants</option>
         </select>
-      </form>
+        <button type="button" className="tags_filter_add_button">
+          Add Tag
+        </button>
+      </div>
     );
   }
 }

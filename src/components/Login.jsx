@@ -3,7 +3,11 @@ import React, { Component } from "react";
 class Login extends Component {
   state = {};
   render() {
-    return <button type="button">Login</button>;
+    return (
+      <div className="login">
+        <button type="button">Login</button>
+      </div>
+    );
   }
 }
 

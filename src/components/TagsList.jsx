@@ -9,13 +9,6 @@ class TagsList extends Component {
         <Tag />
         <Tag />
         <Tag />
-        <Tag />
-        <Tag />
-        <Tag />
-        <Tag />
-        <Tag />
-        <Tag />
-        <Tag />
       </div>
     );
   }

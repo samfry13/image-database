@@ -8,7 +8,7 @@ import LogoutButton from "../Logout";
 import {withAuthUser} from "../Session";
 
 const Navigation = ({authUser}) => (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" fixed="top">
       <Navbar.Brand>Image Database</Navbar.Brand>
       <Navbar.Toggle/>
       <Navbar.Collapse>

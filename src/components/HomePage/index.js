@@ -2,14 +2,13 @@ import React from 'react';
 import {withAuthUser} from "../Session";
 
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import {compose} from "recompose";
 import {withFirebase} from "../Firebase";
 import UploadImageModal from "../UploadImageModal";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import CardColumns from "react-bootstrap/CardColumns";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -39,11 +38,11 @@ class HomePage extends React.Component {
     const {images, showModal, loading} = this.state;
 
     return (
-        <div>
+        <div style={{marginTop: "75px"}}>
           {authUser &&
           <Button variant="primary"
                   style={{
-                    position: 'absolute',
+                    position: 'fixed',
                     right: '5px',
                     bottom: '5px'
                   }}
@@ -52,11 +51,9 @@ class HomePage extends React.Component {
 
           {loading ? <Container className="d-flex justify-content-center"><Spinner animation="border"
                                                                                    variant="primary"/></Container>
-              : <Container className="mt-5">
-                <Row>
+              : <Container><CardColumns className="mx-3" style={{"column-count": "4 !important"}}>
                   {Object.keys(images).map((id) => {
-                    return <Col xs={12} md={4} key={id}>
-                      <Card>
+                      return <Card>
                         <Card.Img variant="top" src={images[id].filePath} loading="lazy"/>
                         <Card.Body>
                           <Card.Title>{images[id].title}</Card.Title>
@@ -64,10 +61,8 @@ class HomePage extends React.Component {
                           <Card.Text>Tags: {images[id].tags}</Card.Text>
                         </Card.Body>
                       </Card>
-                    </Col>
                   })}
-                </Row>
-              </Container>}
+              </CardColumns></Container>}
 
           <UploadImageModal show={showModal} onClose={() => {
             this.setState({showModal: false});

@@ -6,8 +6,9 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import ImageUploader from "../ImageUploader";
 import Alert from "react-bootstrap/Alert";
+import Tags from "../Tags";
 
-class UploadImageModal extends Component {
+class ImageUploadModal extends Component {
   constructor(props) {
     super(props);
 
@@ -15,7 +16,7 @@ class UploadImageModal extends Component {
       title: "",
       description: "",
       imageFile: null,
-      tags: ["test1,test2,test3"],
+      tags: "",
       uploading: false,
       uploadProgress: 0,
     }
@@ -27,11 +28,16 @@ class UploadImageModal extends Component {
     const {title, description, tags, imageFile} = this.state;
     this.setState({uploading: true});
 
+    // Upload Image
     firebase.doUploadImage(title, description, tags, imageFile,
         value => this.setState({uploadProgress: value}),
         this.onClose.bind(this),
-        error => this.setState({error}))
+        error => this.setState({error}));
 
+    // Update Tags
+    tags.split(",").forEach((tag) => {
+      firebase.doAddTag(tag);
+    });
   };
 
   onClose = () => {
@@ -40,7 +46,7 @@ class UploadImageModal extends Component {
       title: "",
       description: "",
       imageFile: null,
-      tags: ["test1,test2,test3"],
+      tags: "",
       uploading: false,
       uploadProgress: 0,
     }, onClose);
@@ -50,7 +56,7 @@ class UploadImageModal extends Component {
     const {show} = this.props;
     const {title, description, tags, uploading, uploadProgress, error} = this.state;
     return <Modal show={show} onHide={this.onClose.bind(this)}>
-      <Modal.Header closeButton><Modal.Title>Image Upload Modal</Modal.Title></Modal.Header>
+      <Modal.Header closeButton><Modal.Title>Image Upload</Modal.Title></Modal.Header>
       <Modal.Body>
         {uploading ? <ProgressBar variant={uploadProgress === 100 ? "success" : "info"} now={uploadProgress} srOnly/>
         : <Form>
@@ -67,7 +73,9 @@ class UploadImageModal extends Component {
               </Form.Group>
               <Form.Group>
                 <Form.Label column={false}>Tags</Form.Label>
-                <Form.Control readOnly type="text" value={tags.join(",")}/>
+                <Tags tags={tags}
+                      onChange={(newTags) => this.setState({tags: newTags})}
+                />
               </Form.Group>
               {error && <Alert variant="danger" dismissible onClose={() => this.setState({error: null})}>
                 <Alert.Heading>Oh No! There was an Error!</Alert.Heading><hr/>
@@ -82,4 +90,4 @@ class UploadImageModal extends Component {
   }
 }
 
-export default withFirebase(UploadImageModal);
+export default withFirebase(ImageUploadModal);

@@ -45,13 +45,27 @@ class Firebase {
 
   images = () => this.db.ref("images");
 
+  tags = () => this.db.ref("tags");
+
+  doAddTag = (tag) => {
+    this.tags().on('value', snapshot => {
+      let tags = snapshot.val();
+      tags = tags.split(",");
+      if (tags.indexOf(tag) === -1) {
+        this.tags().set([...tags, tag].join(","));
+      }
+    });
+  };
+
+
+
   doUploadImage = (title, description, tags, imageFile, onProgressUpdate, onComplete, onError) => {
     const uid = uuidv4();
     const storageRef = this.storage.ref(`images/${uid}`);
     const task = storageRef.put(imageFile, {
       'title': title,
       'description': description,
-      'tags': tags.join(","),
+      'tags': tags,
     });
     task.on("state_changed",
         (snapshot) => {
@@ -65,14 +79,23 @@ class Firebase {
                 this.image(uid).set({
                   title: title,
                   description: description,
-                  tags: tags.join(","),
+                  tags: tags,
                   filePath: url,
                 });
                 onComplete && onComplete();
               }
           )
         });
-  }
+  };
+
+  doUpdateImage = (id, title, description, tags, url) => {
+    this.image(id).set({
+      title: title,
+      description: description,
+      tags: tags,
+      filePath: url,
+    })
+  };
 }
 
 export default Firebase;

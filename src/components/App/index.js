@@ -10,10 +10,13 @@ import HomePage from "../HomePage";
 
 const App = () => (
     <Router>
-        <Navigation/>
-        <Route path={ROUTES.LANDING} component={LandingPage}/>
-        <Route path={ROUTES.LOGIN} component={LoginPage}/>
-        <Route path={ROUTES.HOME} component={HomePage}/>
+      <Navigation/>
+      {/* This div is because the nav bar is an absolute position, so it's like it's not even there, meaning
+          the pictures and login form will slide underneath it*/}
+      <div style={{height: "75px", width: "100%"}}/>
+      <Route path={ROUTES.LANDING} component={LandingPage}/>
+      <Route path={ROUTES.LOGIN} component={LoginPage}/>
+      <Route path={ROUTES.HOME} component={HomePage}/>
     </Router>
 );
 

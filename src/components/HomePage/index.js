@@ -1,14 +1,15 @@
 import React from 'react';
 import {withAuthUser} from "../Session";
-
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import {compose} from "recompose";
 import {withFirebase} from "../Firebase";
-import UploadImageModal from "../UploadImageModal";
+import UploadImageModal from "../ImageUploadModal";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import CardColumns from "react-bootstrap/CardColumns";
+import Tags from "../Tags";
+import ImageDetailModal from "../ImageDetailModal";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -16,7 +17,15 @@ class HomePage extends React.Component {
 
     this.state = {
       images: {},
-      showModal: false,
+      selectedImage: {
+        title: "",
+        description: "",
+        filePath: "",
+        tags: "",
+      },
+      tags: [],
+      showUploadModal: false,
+      showDetailModal: false,
       loading: false,
     }
   }
@@ -35,10 +44,10 @@ class HomePage extends React.Component {
 
   render() {
     const {authUser} = this.props;
-    const {images, showModal, loading} = this.state;
+    const {images, selectedImage, selectedImageId, showUploadModal, showDetailModal, loading} = this.state;
 
     return (
-        <div style={{marginTop: "75px"}}>
+        <div>
           {authUser &&
           <Button variant="primary"
                   style={{
@@ -46,27 +55,34 @@ class HomePage extends React.Component {
                     right: '5px',
                     bottom: '5px'
                   }}
-                  onClick={() => this.setState({showModal: true})}
+                  onClick={() => this.setState({showUploadModal: true})}
           >Upload Image</Button>}
 
           {loading ? <Container className="d-flex justify-content-center"><Spinner animation="border"
                                                                                    variant="primary"/></Container>
-              : <Container><CardColumns className="mx-3" style={{"column-count": "4 !important"}}>
-                  {Object.keys(images).map((id) => {
-                      return <Card>
+              : <Container><CardColumns className="mx-3" style={{columnCount: "4 !important"}}>
+                  {Object.keys(images).map((id, index) => {
+                      return <Card key={index} onClick={() => this.setState({
+                        selectedImage: images[id],
+                        selectedImageId: id,
+                      }, () => this.setState({showDetailModal: true}))}>
                         <Card.Img variant="top" src={images[id].filePath} loading="lazy"/>
                         <Card.Body>
                           <Card.Title>{images[id].title}</Card.Title>
                           <Card.Text>{images[id].description}</Card.Text>
-                          <Card.Text>Tags: {images[id].tags}</Card.Text>
+                          <Tags readOnly tags={images[id].tags}/>
                         </Card.Body>
                       </Card>
                   })}
               </CardColumns></Container>}
 
-          <UploadImageModal show={showModal} onClose={() => {
-            this.setState({showModal: false});
+          <UploadImageModal show={showUploadModal} onClose={() => {
+            this.setState({showUploadModal: false});
             this.loadImages();
+          }}/>
+
+          <ImageDetailModal image={selectedImage} id={selectedImageId} show={showDetailModal} onClose={() => {
+            this.setState({showDetailModal: false});
           }}/>
         </div>
     );

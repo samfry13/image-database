@@ -9,6 +9,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 
 const LoginPage = () => (
     <Container>
@@ -25,6 +26,7 @@ const INITIAL_STATE = {
   email: '',
   password: '',
   error: null,
+  loading: false,
 };
 
 class LoginFormBase extends Component {
@@ -39,13 +41,14 @@ class LoginFormBase extends Component {
     const {email, password} = this.state;
     const {firebase, history} = this.props;
 
+    this.setState({loading: true});
     firebase.doSignInWithEmailAndPassword(email, password)
     .then(() => {
       this.setState({...INITIAL_STATE});
       history.push(ROUTES.HOME);
     })
     .catch(error => {
-      this.setState({error});
+      this.setState({error, loading: false});
     })
   };
 
@@ -54,9 +57,14 @@ class LoginFormBase extends Component {
   };
 
   render() {
-    const {email, password, error} = this.state;
+    const {email, password, error, loading} = this.state;
 
     const isInvalid = password === '' || email === '';
+
+    if (loading) {
+      return <Container className="d-flex justify-content-center"><Spinner animation="border"
+                                                                           variant="primary"/></Container>
+    }
 
     return (
         <Form onSubmit={this.onSubmit}>

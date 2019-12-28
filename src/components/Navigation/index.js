@@ -7,9 +7,16 @@ import Nav from "react-bootstrap/Nav";
 import LogoutButton from "../Logout";
 import {withAuthUser} from "../Session";
 
+import logo from "../../assets/logo.png"
+
 const Navigation = ({authUser}) => (
-    <Navbar bg="light" expand="lg" fixed="top">
-      <Navbar.Brand>Image Database</Navbar.Brand>
+    <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
+      <Navbar.Brand><img
+          alt=""
+          src={logo}
+          style={{width: "32px", height: "32px"}}
+          className="d-inline-block align-top mr-2"
+      />Image Database</Navbar.Brand>
       <Navbar.Toggle/>
       <Navbar.Collapse>
         <Nav>

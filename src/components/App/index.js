@@ -7,8 +7,6 @@ import Navigation from "../Navigation";
 import LandingPage from "../LandingPage";
 import LoginPage from "../LoginPage";
 import HomePage from "../HomePage";
-import Sidebar from "react-sidebar";
-import SidebarContent from "../Sidebar";
 
 const mql = window.matchMedia(`(min-width: 1000px)`);
 

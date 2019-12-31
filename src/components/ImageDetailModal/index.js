@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import Tags from "../Tags";
 import {withFirebase} from "../Firebase";
-import {forEach} from "react-bootstrap/cjs/ElementChildren";
 
 
 class ImageDetailModal extends Component {

@@ -13,7 +13,7 @@ class Tags extends Component {
   }
 
   componentDidMount() {
-    const {firebase, tags} = this.props;
+    const {firebase} = this.props;
     firebase.tags().on('value', snapshot => {
       const suggestedTags = this.formatTags(snapshot.val());
       this.setState({suggestedTags}, () => this.filterSuggestedTags());

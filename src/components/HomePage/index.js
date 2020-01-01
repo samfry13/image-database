@@ -26,7 +26,7 @@ class HomePage extends React.Component {
         filePath: "",
         tags: "",
       },
-      filteredTags: [],
+      filteredTags: "",
       keyword: "",
       showUploadModal: false,
       showDetailModal: false,
@@ -54,11 +54,27 @@ class HomePage extends React.Component {
     let filteredImages = Object.assign({}, images);
 
     if (keyword) {
-      Object.keys(images).forEach(id => {
+      Object.keys(filteredImages).forEach(id => {
         if (filteredImages[id].title.toLowerCase().indexOf(keyword) === -1 && filteredImages[id].description.toLowerCase().indexOf(keyword) === -1) {
           delete filteredImages[id];
         }
       })
+    }
+
+    if (filteredTags) {
+      const tags = filteredTags.split(",");
+
+      Object.keys(filteredImages).forEach(id => {
+        let toDelete = true;
+
+        tags.forEach(tag => {
+          if (filteredImages[id].tags.toLowerCase().indexOf(tag) !== -1) {
+            toDelete = false;
+          }
+        });
+
+        toDelete && delete filteredImages[id];
+      });
     }
 
     this.setState({filteredImages, loading: false});

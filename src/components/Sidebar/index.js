@@ -12,7 +12,7 @@ class Sidebar extends Component {
   }
 
   render() {
-    const {setFilteredKeyword} = this.props;
+    const {setFilteredKeyword, setFilteredTags} = this.props;
     const {tags, keyword} = this.state;
 
     return <div style={{
@@ -32,7 +32,10 @@ class Sidebar extends Component {
         </Form.Group>
         <Form.Group controlId="formGroupTags">
           <Form.Label>Tags Filter</Form.Label>
-          <Tags tags={tags}/>
+          <Tags tags={tags} onChange={(newTags) => {
+            this.setState({tags: newTags});
+            setFilteredTags(newTags);
+          }}/>
         </Form.Group>
       </Form>
     </div>

@@ -55,7 +55,8 @@ class HomePage extends React.Component {
 
     if (keyword) {
       Object.keys(filteredImages).forEach(id => {
-        if (filteredImages[id].title.toLowerCase().indexOf(keyword) === -1 && filteredImages[id].description.toLowerCase().indexOf(keyword) === -1) {
+        if (filteredImages[id].title.toLowerCase().indexOf(keyword.toLowerCase()) === -1
+            && filteredImages[id].description.toLowerCase().indexOf(keyword.toLowerCase()) === -1) {
           delete filteredImages[id];
         }
       })
@@ -65,11 +66,11 @@ class HomePage extends React.Component {
       const tags = filteredTags.split(",");
 
       Object.keys(filteredImages).forEach(id => {
-        let toDelete = true;
+        let toDelete = false;
 
         tags.forEach(tag => {
-          if (filteredImages[id].tags.toLowerCase().indexOf(tag) !== -1) {
-            toDelete = false;
+          if (filteredImages[id].tags.toLowerCase().indexOf(tag.toLowerCase()) === -1) {
+            toDelete = true;
           }
         });
 

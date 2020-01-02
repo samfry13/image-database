@@ -81,7 +81,7 @@ class Firebase {
                   description: description,
                   tags: tags,
                   filePath: url,
-                });
+                }).catch(reason => onError && onError(reason));
                 onComplete && onComplete();
               }
           )
@@ -96,6 +96,11 @@ class Firebase {
       filePath: url,
     })
   };
+
+  doDeleteImage = (id) => {
+    this.image(id).remove();
+    this.storage.ref(`images/${id}`).delete()
+  }
 }
 
 export default Firebase;

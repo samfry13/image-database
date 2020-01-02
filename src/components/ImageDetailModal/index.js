@@ -1,10 +1,12 @@
 import React, {Component} from "react";
+import {withFirebase} from "../Firebase";
+import {withAuthUser} from "../Session";
+import {compose} from "recompose";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import Tags from "../Tags";
-import {withFirebase} from "../Firebase";
 
 
 class ImageDetailModal extends Component {
@@ -32,9 +34,15 @@ class ImageDetailModal extends Component {
     }
   }
 
-  toggleEdit() {
-    const {readOnly} = this.state;
-    this.setState({readOnly: !readOnly});
+  onDelete() {
+    const {firebase, id, onDelete} = this.props;
+
+    if (window.confirm("Are you sure you want to delete this image permanently?")) {
+      firebase.doDeleteImage(id);
+
+      this.onClose();
+      onDelete();
+    }
   }
 
   onSubmitUpdate() {
@@ -49,17 +57,17 @@ class ImageDetailModal extends Component {
       firebase.doAddTag(tag);
     });
 
-    this.onClose();
+    this.setState({readOnly: true});
   }
 
   onClose() {
     const {onClose} = this.props;
-    this.toggleEdit();
+    this.setState({readOnly: true});
     onClose();
   }
 
   render() {
-    const {show} = this.props;
+    const {show, authUser} = this.props;
     const {title, description, filePath, tags, readOnly} = this.state;
 
     return <Modal show={show} onHide={this.onClose.bind(this)}>
@@ -67,7 +75,7 @@ class ImageDetailModal extends Component {
       <Modal.Body>
         <Form>
           <Form.Group>
-            <Image src={filePath} fluid />
+            <Image src={filePath} fluid/>
           </Form.Group>
           <Form.Group>
             <Form.Label column={false}>Title</Form.Label>
@@ -90,15 +98,18 @@ class ImageDetailModal extends Component {
         <Button type="button"
                 variant="secondary"
                 onClick={this.onClose.bind(this)}
-        >Cancel</Button>
-        <Button type="button"
-                variant="primary"
-                onClick={readOnly ? this.toggleEdit.bind(this)
-                    : this.onSubmitUpdate.bind(this)}
-        >{readOnly ? "Edit" : "Save"}</Button>
+        >Close</Button>
+        {authUser && <Button type="button"
+                             variant="danger" onClick={() => this.onDelete()}
+        >Delete</Button>}
+        {authUser && <Button type="button"
+                             variant="primary"
+                             onClick={readOnly ? () => this.setState({readOnly: false})
+                                 : this.onSubmitUpdate.bind(this)}
+        >{readOnly ? "Edit" : "Save"}</Button>}
       </Modal.Footer>
     </Modal>
   }
 }
 
-export default withFirebase(ImageDetailModal);
+export default compose(withAuthUser, withFirebase)(ImageDetailModal);

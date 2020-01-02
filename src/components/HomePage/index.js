@@ -127,9 +127,12 @@ class HomePage extends React.Component {
               this.loadImages();
             }}/>
 
-            <ImageDetailModal image={selectedImage} id={selectedImageId} show={showDetailModal} onClose={() => {
-              this.setState({showDetailModal: false});
-            }}/>
+            <ImageDetailModal image={selectedImage}
+                              id={selectedImageId}
+                              show={showDetailModal}
+                              onClose={() => this.setState({showDetailModal: false})}
+                              onDelete={() => this.loadImages()}
+            />
           </div>
         </Sidebar>
     );

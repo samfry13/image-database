@@ -86,12 +86,15 @@ class HomePage extends React.Component {
 
     return (
         <Sidebar
-            sidebar={<SidebarContent setFilteredKeyword={(keyword) => this.setState({keyword}, () => this.filterImages())}
+            sidebar={sidebarDocked && <SidebarContent docked={true} setFilteredKeyword={(keyword) => this.setState({keyword}, () => this.filterImages())}
                                      setFilteredTags={(tags) => this.setState({filteredTags: tags}, () => this.filterImages())}/>}
             open={sidebarOpen}
             docked={sidebarDocked}
+            touch={false}
             onSetOpen={onSetOpen}>
           <div style={{height: "75px", width: "100%"}}/>
+          {!sidebarDocked && <SidebarContent docked={false} setFilteredKeyword={(keyword) => this.setState({keyword}, () => this.filterImages())}
+                                             setFilteredTags={(tags) => this.setState({filteredTags: tags}, () => this.filterImages())}/>}
           <div>
             {authUser &&
             <Button variant="primary"

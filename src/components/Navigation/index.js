@@ -9,16 +9,13 @@ import {withAuthUser} from "../Session";
 
 import logo from "../../assets/logo.png"
 
-const Navigation = ({authUser, sidebarDocked, toggleSidebarOpen}) => (
+const Navigation = ({authUser}) => (
     <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
       <Navbar.Brand><img
           alt=""
           src={logo}
           style={{width: "32px", height: "32px"}}
           className="d-inline-block align-top mr-2"
-          onClick={() => {
-            !sidebarDocked && toggleSidebarOpen();
-          }}
       />Image Database</Navbar.Brand>
       <Nav className="ml-auto">
         {!authUser ? <Nav.Link as={Link} to={ROUTES.LOGIN}>Login</Nav.Link>

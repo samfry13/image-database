@@ -12,16 +12,16 @@ class Sidebar extends Component {
   }
 
   render() {
-    const {setFilteredKeyword, setFilteredTags} = this.props;
+    const {setFilteredKeyword, setFilteredTags, docked} = this.props;
     const {tags, keyword} = this.state;
 
-    return <div style={{
+    return <div style={docked ? {
       width: "300px",
       height: "100%",
       padding: "0 10px",
       backgroundColor: "white"
-    }}>
-      <div style={{height: "75px", width: "100%"}}/>
+    } : {padding: "0 30px"}}>
+      {docked && <div style={{height: "75px", width: "100%"}}/>}
       <Form>
         <Form.Group controlId="formGroupKeyword">
           <Form.Label>Keyword Search</Form.Label>

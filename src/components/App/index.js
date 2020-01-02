@@ -8,7 +8,7 @@ import LandingPage from "../LandingPage";
 import LoginPage from "../LoginPage";
 import HomePage from "../HomePage";
 
-const mql = window.matchMedia(`(min-width: 1000px)`);
+const mql = window.matchMedia(`(min-width: 950px)`);
 
 class App extends Component {
   constructor(props) {
@@ -38,19 +38,11 @@ class App extends Component {
     this.setState({sidebarDocked: mql.matches, sidebarOpen: false});
   }
 
-  toggleOpen(ev) {
-    this.setState({ sidebarOpen: !this.state.sidebarOpen });
-
-    if (ev) {
-      ev.preventDefault();
-    }
-  }
-
   render() {
     const {sidebarOpen, sidebarDocked} = this.state;
 
     return <Router>
-      <Navigation sidebarDocked={sidebarDocked} toggleSidebarOpen={this.toggleOpen.bind(this)}/>
+      <Navigation />
       {/* This div is because the nav bar is an absolute position, so it's like it's not even there, meaning
           the pictures and login form will slide underneath it*/}
       <div style={{height: "75px", width: "100%"}}/>

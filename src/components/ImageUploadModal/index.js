@@ -73,9 +73,7 @@ class ImageUploadModal extends Component {
               </Form.Group>
               <Form.Group>
                 <Form.Label column={false}>Tags</Form.Label>
-                <Tags tags={tags}
-                      onChange={(newTags) => this.setState({tags: newTags})}
-                />
+                <Tags tags={tags} onChange={(newTags) => this.setState({tags: newTags})}/>
               </Form.Group>
               {error && <Alert variant="danger" dismissible onClose={() => this.setState({error: null})}>
                 <Alert.Heading>Oh No! There was an Error!</Alert.Heading><hr/>

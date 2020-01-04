@@ -32,7 +32,7 @@ class Sidebar extends Component {
         </Form.Group>
         <Form.Group controlId="formGroupTags">
           <Form.Label>Tags Filter</Form.Label>
-          <Tags tags={tags} onChange={(newTags) => {
+          <Tags tags={tags} autocomplete onChange={(newTags) => {
             this.setState({tags: newTags});
             setFilteredTags(newTags);
           }}/>

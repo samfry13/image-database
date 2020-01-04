@@ -58,13 +58,13 @@ class Tags extends Component {
   }
 
   render() {
-    const {readOnly} = this.props;
+    const {readOnly, autocomplete} = this.props;
     const {tags, filteredSuggestedTags} = this.state;
 
     return <ReactTags readOnly={readOnly}
                       tags={tags}
                       suggestions={filteredSuggestedTags}
-                      autocomplete
+                      autocomplete={autocomplete}
                       handleDelete={this.handleDelete.bind(this)}
                       handleAddition={this.handleAddition.bind(this)}
                       allowDragDrop={false}

@@ -81,6 +81,8 @@ class Firebase {
                   description: description,
                   tags: tags,
                   filePath: url,
+                  createdAt: new Date().toString(),
+                  updatedAt: new Date().toString(),
                 }).catch(reason => onError && onError(reason));
                 onComplete && onComplete();
               }
@@ -88,12 +90,14 @@ class Firebase {
         });
   };
 
-  doUpdateImage = (id, title, description, tags, url) => {
+  doUpdateImage = (id, title, description, tags, url, createdAt) => {
     this.image(id).set({
       title: title,
       description: description,
       tags: tags,
       filePath: url,
+      updatedAt: new Date().toString(),
+      createdAt: createdAt,
     })
   };
 

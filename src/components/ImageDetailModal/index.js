@@ -17,6 +17,7 @@ class ImageDetailModal extends Component {
       title: props.image.title,
       description: props.image.description,
       filePath: props.image.filePath,
+      updatedAt: props.image.updatedAt,
       tags: props.image.tags,
       readOnly: true,
     }
@@ -29,6 +30,8 @@ class ImageDetailModal extends Component {
         title: image.title,
         description: image.description,
         filePath: image.filePath,
+        createdAt: image.createdAt,
+        updatedAt: image.updatedAt,
         tags: image.tags,
       })
     }
@@ -47,10 +50,10 @@ class ImageDetailModal extends Component {
 
   onSubmitUpdate() {
     const {firebase, id} = this.props;
-    const {title, description, tags, filePath} = this.state;
+    const {title, description, tags, filePath, createdAt} = this.state;
 
     // Update Image
-    firebase.doUpdateImage(id, title, description, tags, filePath);
+    firebase.doUpdateImage(id, title, description, tags, filePath, createdAt);
 
     // Update any new tags
     tags.split(",").forEach((tag) => {
@@ -67,8 +70,8 @@ class ImageDetailModal extends Component {
   }
 
   render() {
-    const {show, authUser} = this.props;
-    const {title, description, filePath, tags, readOnly} = this.state;
+    const {show, authUser, id} = this.props;
+    const {title, description, filePath, updatedAt, tags, readOnly} = this.state;
 
     return <Modal show={show} onHide={this.onClose.bind(this)}>
       <Modal.Header closeButton><Modal.Title>Image Details</Modal.Title></Modal.Header>
@@ -95,6 +98,11 @@ class ImageDetailModal extends Component {
         </Form>
       </Modal.Body>
       <Modal.Footer>
+        <div className="mr-auto">
+          <small>Last Updated: {new Date(updatedAt).toDateString()}</small>
+          <br/>
+          <small><sup>ID: {id}</sup></small>
+        </div>
         <Button type="button"
                 variant="secondary"
                 onClick={this.onClose.bind(this)}

@@ -18,16 +18,19 @@ class HomePage extends React.Component {
     super(props);
 
     this.state = {
-      images: {},
-      filteredImages: {},
+      images: [],
+      filteredImages: [],
       selectedImage: {
         title: "",
         description: "",
         filePath: "",
+        createdAt: "",
+        updatedAt: "",
         tags: "",
       },
       filteredTags: "",
       keyword: "",
+      sortingOrder: "chronological_asc",
       showUploadModal: false,
       showDetailModal: false,
       loading: false,
@@ -43,39 +46,59 @@ class HomePage extends React.Component {
     this.setState({loading: true});
 
     firebase.images().on('value', snapshot => {
-      this.setState({images: snapshot.val(), loading: false}, () => this.filterImages());
+      this.setState({images: this.formatImagesFromFirebase(snapshot.val()), loading: false},
+          () => this.filterImages());
+    });
+
+  }
+
+  formatImagesFromFirebase(images) {
+    return Object.keys(images).map(id => {
+      let image = images[id];
+      image.id = id;
+      return image;
     });
   }
 
   filterImages() {
-    const {filteredTags, keyword, images} = this.state;
+    const {filteredTags, keyword, sortingOrder, images} = this.state;
 
     this.setState({loading: true});
-    let filteredImages = Object.assign({}, images);
+    let filteredImages = images.slice();
 
     if (keyword) {
-      Object.keys(filteredImages).forEach(id => {
-        if (filteredImages[id].title.toLowerCase().indexOf(keyword.toLowerCase()) === -1
-            && filteredImages[id].description.toLowerCase().indexOf(keyword.toLowerCase()) === -1) {
-          delete filteredImages[id];
-        }
-      })
+      filteredImages = filteredImages.filter(image => image.title.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
+          || image.description.toLowerCase().indexOf(keyword.toLowerCase()) !== -1);
     }
 
     if (filteredTags) {
       const tags = filteredTags.split(",");
-
-      Object.keys(filteredImages).forEach(id => {
+      filteredImages = filteredImages.filter(image => {
         let toDelete = false;
-
         tags.forEach(tag => {
-          if (filteredImages[id].tags.toLowerCase().indexOf(tag.toLowerCase()) === -1) {
+          if (image.tags.toLowerCase().indexOf(tag.toLowerCase()) === -1) {
             toDelete = true;
           }
         });
-
-        toDelete && delete filteredImages[id];
+        return !toDelete;
       });
+    }
+
+    switch(sortingOrder) {
+      case "alphabetical_asc":
+        filteredImages.sort((image1, image2) => image1.title.toLowerCase() > image2.title.toLowerCase());
+        break;
+      case "alphabetical_des":
+        filteredImages.sort((image1, image2) => image1.title.toLowerCase() < image2.title.toLowerCase());
+        break;
+      case "chronological_asc":
+        filteredImages.sort((image1, image2) => new Date(image1.createdAt) < new Date(image2.createdAt));
+        break;
+      case "chronological_des":
+        filteredImages.sort((image1, image2) => new Date(image1.createdAt) > new Date(image2.createdAt));
+        break;
+      default:
+        break;
     }
 
     this.setState({filteredImages, loading: false});
@@ -83,12 +106,14 @@ class HomePage extends React.Component {
 
   render() {
     const {authUser, sidebarOpen, sidebarDocked, onSetOpen} = this.props;
-    const {filteredImages: images, selectedImage, selectedImageId, showUploadModal, showDetailModal, loading} = this.state;
+    const {filteredImages, selectedImage, selectedImageId, showUploadModal, showDetailModal, loading} = this.state;
 
     return (
         <Sidebar
-            sidebar={sidebarDocked && <SidebarContent docked={true} setFilteredKeyword={(keyword) => this.setState({keyword}, () => this.filterImages())}
-                                     setFilteredTags={(tags) => this.setState({filteredTags: tags}, () => this.filterImages())}/>}
+            sidebar={sidebarDocked && <SidebarContent docked={true}
+                                                      setFilteredKeyword={(keyword) => this.setState({keyword}, () => this.filterImages())}
+                                                      setFilteredTags={(tags) => this.setState({filteredTags: tags}, () => this.filterImages())}
+                                                      setSortingOrder={(order) => this.setState({sortingOrder: order}, () => this.filterImages())}/>}
             open={sidebarOpen}
             docked={sidebarDocked}
             touch={false}
@@ -111,16 +136,16 @@ class HomePage extends React.Component {
             {loading ? <Container className="d-flex justify-content-center"><Spinner animation="border"
                                                                                      variant="primary"/></Container>
                 : <Container><CardColumns className="mx-3" style={{columnCount: "4 !important"}}>
-                  {Object.keys(images).map((id, index) => {
+                  {filteredImages.map((image, index) => {
                     return <Card key={index} onClick={() => this.setState({
-                      selectedImage: images[id],
-                      selectedImageId: id,
+                      selectedImage: image,
+                      selectedImageId: image.id,
                     }, () => this.setState({showDetailModal: true}))}>
-                      <Card.Img variant="top" src={images[id].filePath} loading="lazy"/>
+                      <Card.Img variant="top" src={image.filePath} loading="lazy"/>
                       <Card.Body>
-                        <Card.Title>{images[id].title}</Card.Title>
-                        <Card.Text>{images[id].description}</Card.Text>
-                        <Tags readOnly tags={images[id].tags}/>
+                        <Card.Title>{image.title}</Card.Title>
+                        <Card.Text>{image.description}</Card.Text>
+                        <Tags readOnly tags={image.tags}/>
                       </Card.Body>
                     </Card>
                   })}

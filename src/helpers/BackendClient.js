@@ -4,16 +4,16 @@ export default class BackendClient {
     static isSecure = process.env.REACT_APP_BACKEND_SSL === true ? "s" : "";
     static url = `http${this.isSecure}://${this.host}:${this.port}/api`;
 
-    static async getImagePageNum(pageSize) {
-        const get_url = `${this.url}/image/db/pages?pageSize=${pageSize}`
+    static async getImagePageNum(pageSize, search) {
+        const get_url = `${this.url}/image/db/pages?pageSize=${pageSize}&search=${search}`;
         const response = await fetch(get_url, {
             method: "GET",
         });
         return response.json();
     }
     
-    static async getAllImages(pageSize, pageNum) {
-        const get_url = `${this.url}/image/db?pageSize=${pageSize}&pageNum=${pageNum}`
+    static async getAllImages(pageSize, pageNum, search) {
+        const get_url = `${this.url}/image/db?pageSize=${pageSize}&pageNum=${pageNum}&search=${search}`;
         const response = await fetch(get_url, {
             method: "GET",
         });
@@ -21,7 +21,7 @@ export default class BackendClient {
     }
 
     static async getImage(id) {
-        const get_url = `${this.url}/image/db?id=${id}`
+        const get_url = `${this.url}/image/db?id=${id}`;
         const response = await fetch(get_url, {
             method: "GET",
         });

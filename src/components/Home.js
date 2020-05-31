@@ -31,25 +31,26 @@ class Home extends Component {
             pageSize: 5,
             pageNum: 1,
             pageTotal: 1,
+            search: "",
             images: [],
             loading: false
         };
     }
 
     async componentDidMount() {
-        const {pageSize, pageNum} = this.state;
+        const {pageSize, pageNum, search} = this.state;
         this.setState({loading: true});
         this.setState({
             loading: true, 
-            images: await BackendClient.getAllImages(pageSize, pageNum),
-            pageTotal: await BackendClient.getImagePageNum(pageSize)
+            images: await BackendClient.getAllImages(pageSize, pageNum, search),
+            pageTotal: await BackendClient.getImagePageNum(pageSize, search)
         });
         this.setState({loading: false});
     }
 
     async setPage(page) {
-        const {pageSize} = this.state;
-        this.setState({loading: true, pageNum: page, images: await BackendClient.getAllImages(pageSize, page)}, () => this.setState({loading: false}));
+        const {pageSize, search} = this.state;
+        this.setState({loading: true, pageNum: page, images: await BackendClient.getAllImages(pageSize, page, search)}, () => this.setState({loading: false}));
     }
 
     render() { 

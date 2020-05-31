@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { AppBar, Button, Toolbar, IconButton, Typography } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
@@ -38,5 +39,9 @@ class Navbar extends Component {
         );
     }
 }
+
+Navbar.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
  
 export default withStyles(styles)(Navbar);

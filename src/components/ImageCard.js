@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { red } from "@material-ui/core/colors";
 import { Card, CardHeader, Chip, IconButton, CardContent, CardMedia, Typography, CardActions, Collapse } from "@material-ui/core";
-import { MoreVert, Create, ExpandMore } from "@material-ui/icons";
+import { Create, ExpandMore } from "@material-ui/icons";
 
 const styles = (theme) => ({
     root: {
@@ -73,5 +74,10 @@ class ImageCard extends Component {
         );
     }
 }
+
+ImageCard.propTypes = {
+    classes: PropTypes.object.isRequired,
+    image: PropTypes.object.isRequired,
+};
  
 export default withStyles(styles)(ImageCard);

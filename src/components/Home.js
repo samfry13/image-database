@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import ImageCard from "./ImageCard";
 import BackendClient from "../helpers/BackendClient";
@@ -70,5 +71,9 @@ class Home extends Component {
         );
     }
 }
- 
+
+Home.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
 export default withStyles(styles)(Home);

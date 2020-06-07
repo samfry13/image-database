@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { AppBar, Button, Toolbar, IconButton, Typography } from "@material-ui/core";
+import {
+    AppBar,
+    Button,
+    Toolbar,
+    IconButton,
+    Typography,
+} from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 
 const styles = (theme) => ({
@@ -9,7 +15,7 @@ const styles = (theme) => ({
         flexGrow: 1,
     },
     stickyAppBar: {
-        top: "5px"
+        top: "5px",
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -21,18 +27,21 @@ const styles = (theme) => ({
 
 class Navbar extends Component {
     render() {
-        const {classes} = this.props;
-        return ( 
+        const { classes } = this.props;
+        return (
             <div className={classes.root}>
-                <AppBar classes={{positionSticky: classes.stickyAppBar}} position="sticky">
+                <AppBar
+                    classes={{ positionSticky: classes.stickyAppBar }}
+                    position="sticky"
+                >
                     <Toolbar>
-                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                        {/*<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                             <Menu />
-                        </IconButton>
+                        </IconButton>*/}
                         <Typography variant="h6" className={classes.title}>
                             Costume Database
                         </Typography>
-                        <Button color="inherit">Login</Button>
+                        {/*<Button color="inherit">Login</Button>*/}
                     </Toolbar>
                 </AppBar>
             </div>
@@ -43,5 +52,6 @@ class Navbar extends Component {
 Navbar.propTypes = {
     classes: PropTypes.object.isRequired,
 };
- 
+
 export default withStyles(styles)(Navbar);
+

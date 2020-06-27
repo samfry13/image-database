@@ -8,12 +8,41 @@ export default class BackendClient {
 
     static async handleJSONError(response, errorResponse) {
         let body = await response.json();
-        console.log(body);
         if (body.error) {
             return errorResponse;
         }
 
         return body;
+    }
+
+    // --------------------------------------- Authentication Operations --------------------------------------------
+
+    /*
+     * Login to the database
+     *
+     * @param email: string     => email of user
+     * @param password: string  => password of user
+     *
+     * @returns a json object containing the user information and token
+     */
+    static async login(email, password) {
+        return new Promise(async (resolve, reject) => {
+            const post_url = `${this.url}/auth/login`;
+            const response = await fetch(post_url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            let body = await response.json();
+            if (body.error) {
+                reject(body);
+            }
+
+            resolve(body);
+        });
     }
 
     /*
@@ -103,9 +132,9 @@ export default class BackendClient {
         const post_url = `${this.url}/tags`;
         const response = await fetch(post_url, {
             method: "POST",
-            body: {
+            body: JSON.stringify({
                 tag: tag,
-            },
+            }),
         });
 
         return this.handleJSONError(response, false);

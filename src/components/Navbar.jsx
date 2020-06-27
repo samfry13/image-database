@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { AppBar, Button, Toolbar, Typography } from "@material-ui/core";
+import {
+    AppBar,
+    Button,
+    Toolbar,
+    Typography,
+    Menu,
+    MenuItem,
+} from "@material-ui/core";
 import LoginModal from "./LoginModal";
 
 const styles = (theme) => ({
@@ -24,12 +31,13 @@ class Navbar extends Component {
         super(props);
         this.state = {
             loginModalOpen: false,
+            menuAnchor: null,
         };
     }
 
     render() {
-        const { classes, login, authenticated, user } = this.props;
-        const { loginModalOpen } = this.state;
+        const { classes, login, logout, authenticated, user } = this.props;
+        const { loginModalOpen, menuAnchor } = this.state;
         return (
             <div className={classes.root}>
                 <AppBar
@@ -41,7 +49,35 @@ class Navbar extends Component {
                             Costume Database
                         </Typography>
                         {authenticated ? (
-                            <Typography>{user.name}</Typography>
+                            <>
+                                <Button
+                                    color="inherit"
+                                    onClick={(e) =>
+                                        this.setState({
+                                            menuAnchor: e.currentTarget,
+                                        })
+                                    }
+                                >
+                                    {user.name}
+                                </Button>
+                                <Menu
+                                    anchorEl={menuAnchor}
+                                    keepMounted
+                                    open={!!menuAnchor}
+                                    onClose={() =>
+                                        this.setState({ menuAnchor: null })
+                                    }
+                                >
+                                    <MenuItem
+                                        onClick={() => {
+                                            this.setState({ menuAnchor: null });
+                                            logout();
+                                        }}
+                                    >
+                                        Logout
+                                    </MenuItem>
+                                </Menu>
+                            </>
                         ) : (
                             <Button
                                 color="inherit"
@@ -57,7 +93,9 @@ class Navbar extends Component {
                 <LoginModal
                     open={loginModalOpen}
                     onClose={() => this.setState({ loginModalOpen: false })}
-                    onSubmit={(email, password) => login(email, password)}
+                    onSubmit={async (email, password) =>
+                        await login(email, password)
+                    }
                 />
             </div>
         );
@@ -67,6 +105,7 @@ class Navbar extends Component {
 Navbar.propTypes = {
     classes: PropTypes.object.isRequired,
     login: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired,
     authenticated: PropTypes.bool,
     user: PropTypes.object,
 };

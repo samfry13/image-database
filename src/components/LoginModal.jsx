@@ -50,7 +50,13 @@ class LoginModal extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose}>Cancel</Button>
-                    <Button onClick={() => onSubmit(email, password)}>
+                    <Button
+                        onClick={async () => {
+                            await onSubmit(email, password);
+                            this.setState({ email: "", password: "" });
+                            onClose();
+                        }}
+                    >
                         Submit
                     </Button>
                 </DialogActions>

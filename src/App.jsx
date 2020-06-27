@@ -11,21 +11,48 @@ class App extends Component {
         super(props);
         this.state = {
             user: undefined,
-            token: undefined,
         };
     }
 
-    login(email, password) {
+    async componentDidMount() {
+        await this.refreshSession();
+    }
+
+    async refreshSession() {
         const { enqueueSnackbar } = this.props;
-        BackendClient.login(email, password).then(
-            (result) => {
-                this.setState({ user: result.user, token: result.token });
-                enqueueSnackbar(result.msg, { variant: "success" });
-            },
-            (result) => {
-                enqueueSnackbar(result.msg, { variant: "error" });
-            }
-        );
+        const result = await BackendClient.refreshSession().catch((err) => {
+            console.error(err);
+            localStorage.removeItem("token");
+            enqueueSnackbar(err.msg, { variant: "error" });
+        });
+
+        if (!!result) {
+            localStorage.setItem("token", result.token);
+            this.setState({ user: result.user });
+        }
+    }
+
+    async login(email, password) {
+        const { enqueueSnackbar } = this.props;
+        return new Promise((resolve) => {
+            BackendClient.login(email, password)
+                .then((result) => {
+                    localStorage.setItem("token", result.token);
+                    this.setState({ user: result.user });
+                    enqueueSnackbar(result.msg, { variant: "success" });
+                    resolve(!!result);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    enqueueSnackbar(err.msg, { variant: "error" });
+                    throw err;
+                });
+        });
+    }
+
+    async logout() {
+        localStorage.removeItem("token");
+        this.setState({ user: undefined });
     }
 
     render() {
@@ -34,10 +61,11 @@ class App extends Component {
             <div className="App">
                 <Navbar
                     login={this.login.bind(this)}
+                    logout={this.logout.bind(this)}
                     authenticated={!!user}
                     user={user}
                 />
-                <Home />
+                <Home authenticated={!!user} user={user} />
             </div>
         );
     }

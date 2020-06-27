@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
+import { withSnackbar } from "notistack";
 import ImageCard from "./ImageCard";
 import BackendClient from "../helpers/BackendClient";
 import {
@@ -9,9 +10,11 @@ import {
     Fab,
     TextField,
     Typography,
+    Zoom,
 } from "@material-ui/core";
 import { Pagination, Autocomplete } from "@material-ui/lab";
 import { Add } from "@material-ui/icons";
+import ImageModal from "./ImageModal";
 
 const styles = (theme) => ({
     root: {
@@ -45,28 +48,14 @@ class Home extends Component {
             tagOptions: [],
             images: [],
             loading: false,
+            selectedImage: {},
+            selectedImageId: 0,
+            showDetailModal: false,
         };
     }
 
     async componentDidMount() {
-        const { pageSize, pageNum, search, tags } = this.state;
-        this.setState({ loading: true });
-        this.setState({
-            loading: true,
-            images: await BackendClient.getAllImages(
-                pageSize,
-                pageNum,
-                search,
-                tags
-            ),
-            pageTotal: await BackendClient.getImagePageNum(
-                pageSize,
-                search,
-                tags
-            ),
-            tagOptions: await BackendClient.getTags(),
-        });
-        this.setState({ loading: false });
+        await this.updatePage();
     }
 
     async setPage(pageNum) {
@@ -82,6 +71,7 @@ class Home extends Component {
     }
 
     async updatePage() {
+        const { enqueueSnackbar } = this.props;
         const { pageSize, pageNum, search, tags } = this.state;
         this.setState(
             {
@@ -91,26 +81,45 @@ class Home extends Component {
                     pageNum,
                     search,
                     tags.map((tag) => tag.tag)
-                ),
+                ).catch((err) => {
+                    console.error(err);
+                    enqueueSnackbar(err.msg, { variant: "error" });
+                    return [];
+                }),
                 pageTotal: await BackendClient.getImagePageNum(
                     pageSize,
                     search,
                     tags.map((tag) => tag.tag)
-                ),
+                ).catch((err) => {
+                    console.error(err);
+                    enqueueSnackbar(err.msg, { variant: "error" });
+                    return 0;
+                }),
             },
             () => this.setState({ loading: false })
         );
     }
 
     render() {
-        const { classes } = this.props;
-        const { tagOptions, images, pageNum, pageTotal, loading } = this.state;
+        const { classes, authenticated } = this.props;
+        const {
+            tagOptions,
+            images,
+            pageNum,
+            pageTotal,
+            loading,
+            selectedImage,
+            selectedImageId,
+            showDetailModal,
+        } = this.state;
 
         return (
             <div className={classes.root}>
-                <Fab className={classes.fab} color="primary">
-                    <Add />
-                </Fab>
+                <Zoom in={authenticated}>
+                    <Fab className={classes.fab} color="primary">
+                        <Add />
+                    </Fab>
+                </Zoom>
                 <div className={classes.search}>
                     <Typography variant="h5">Search</Typography>
                     <Grid container spacing={2} alignItems="flex-end">
@@ -152,7 +161,21 @@ class Home extends Component {
                     ) : images.length ? (
                         images.map((image, i) => (
                             <Grid item key={i}>
-                                <ImageCard image={image} />
+                                <ImageCard
+                                    image={image}
+                                    onClick={() =>
+                                        this.setState(
+                                            {
+                                                selectedImage: image,
+                                                selectedImageId: image.id,
+                                            },
+                                            () =>
+                                                this.setState({
+                                                    showDetailModal: true,
+                                                })
+                                        )
+                                    }
+                                />
                             </Grid>
                         ))
                     ) : (
@@ -167,6 +190,14 @@ class Home extends Component {
                     page={pageNum}
                     onChange={(_, v) => this.setPage(v)}
                 />
+                <ImageModal
+                    image={selectedImage}
+                    id={selectedImageId}
+                    show={showDetailModal}
+                    onClose={() => this.setState({ showDetailModal: false })}
+                    onDelete={() => this.updatePage()}
+                    authenticated={authenticated}
+                />
             </div>
         );
     }
@@ -174,6 +205,9 @@ class Home extends Component {
 
 Home.propTypes = {
     classes: PropTypes.object.isRequired,
+    enqueueSnackbar: PropTypes.func.isRequired,
+    authenticated: PropTypes.bool,
+    user: PropTypes.object,
 };
 
-export default withStyles(styles)(Home);
+export default withSnackbar(withStyles(styles)(Home));

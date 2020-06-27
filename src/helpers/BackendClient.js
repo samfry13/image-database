@@ -6,15 +6,6 @@ export default class BackendClient {
         ? `https://${this.host}/api`
         : `http://${this.host}:${this.port}/api`;
 
-    static async handleJSONError(response, errorResponse) {
-        let body = await response.json();
-        if (body.error) {
-            return errorResponse;
-        }
-
-        return body;
-    }
-
     // --------------------------------------- Authentication Operations --------------------------------------------
 
     /*
@@ -26,7 +17,7 @@ export default class BackendClient {
      * @returns a json object containing the user information and token
      */
     static async login(email, password) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             const post_url = `${this.url}/auth/login`;
             const response = await fetch(post_url, {
                 method: "POST",
@@ -34,14 +25,39 @@ export default class BackendClient {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ email, password }),
-            });
+            }).then((r) => r.json());
 
-            let body = await response.json();
-            if (body.error) {
-                reject(body);
+            if (response.error) {
+                throw response;
             }
 
-            resolve(body);
+            resolve(response);
+        });
+    }
+
+    static async refreshSession() {
+        return new Promise(async (resolve) => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                const get_url = `${this.url}/auth/session`;
+                const response = await fetch(get_url, {
+                    method: "GET",
+                    headers: {
+                        token: token,
+                    },
+                }).then((r) => r.json());
+
+                if (response.error) {
+                    throw response;
+                }
+
+                resolve(response);
+            } else {
+                throw {
+                    error: true,
+                    msg: "Error: No token found",
+                };
+            }
         });
     }
 
@@ -55,13 +71,19 @@ export default class BackendClient {
      * @returns a int of the amount of pages with that query
      */
     static async getImagePageNum(pageSize, search, tags) {
-        const tags_query = tags.map((tag) => `&tags=${tag}`).join("");
-        const get_url = `${this.url}/image/db/pages?pageSize=${pageSize}&search=${search}${tags_query}`;
-        const response = await fetch(get_url, {
-            method: "GET",
-        });
+        return new Promise(async (resolve) => {
+            const tags_query = tags.map((tag) => `&tags=${tag}`).join("");
+            const get_url = `${this.url}/image/db/pages?pageSize=${pageSize}&search=${search}${tags_query}`;
+            const response = await fetch(get_url, {
+                method: "GET",
+            }).then((r) => r.json());
 
-        return this.handleJSONError(response, 0);
+            if (response.error) {
+                throw response;
+            }
+
+            resolve(response);
+        });
     }
 
     // --------------------------------------- Image Operations --------------------------------------------
@@ -77,13 +99,19 @@ export default class BackendClient {
      * @returns a list of image json objects
      */
     static async getAllImages(pageSize, pageNum, search, tags) {
-        const tags_query = tags.map((tag) => `&tags=${tag}`).join("");
-        const get_url = `${this.url}/image/db?pageSize=${pageSize}&pageNum=${pageNum}&search=${search}${tags_query}`;
-        const response = await fetch(get_url, {
-            method: "GET",
-        });
+        return new Promise(async (resolve) => {
+            const tags_query = tags.map((tag) => `&tags=${tag}`).join("");
+            const get_url = `${this.url}/image/db?pageSize=${pageSize}&pageNum=${pageNum}&search=${search}${tags_query}`;
+            const response = await fetch(get_url, {
+                method: "GET",
+            }).then((r) => r.json());
 
-        return this.handleJSONError(response, []);
+            if (response.error) {
+                throw response;
+            }
+
+            resolve(response);
+        });
     }
 
     /*
@@ -94,12 +122,18 @@ export default class BackendClient {
      * @returns a single image json object
      */
     static async getImage(id) {
-        const get_url = `${this.url}/image/db?id=${id}`;
-        const response = await fetch(get_url, {
-            method: "GET",
-        });
+        return new Promise(async (resolve) => {
+            const get_url = `${this.url}/image/db?id=${id}`;
+            const response = await fetch(get_url, {
+                method: "GET",
+            }).then((r) => r.json());
 
-        return this.handleJSONError(response, {});
+            if (response.error) {
+                throw response;
+            }
+
+            resolve(response);
+        });
     }
 
     // --------------------------------------- Storage Operations ----------------------------------------
@@ -113,12 +147,18 @@ export default class BackendClient {
      * @returns an array of tags
      */
     static async getTags() {
-        const get_url = `${this.url}/tags`;
-        const response = await fetch(get_url, {
-            method: "GET",
-        });
+        return new Promise(async (resolve) => {
+            const get_url = `${this.url}/tags`;
+            const response = await fetch(get_url, {
+                method: "GET",
+            }).then((r) => r.json());
 
-        return this.handleJSONError(response, []);
+            if (response.error) {
+                throw response;
+            }
+
+            resolve(response);
+        });
     }
 
     /*
@@ -129,14 +169,18 @@ export default class BackendClient {
      * @returns a json response whether or not it was successful
      */
     static async insertTag(tag) {
-        const post_url = `${this.url}/tags`;
-        const response = await fetch(post_url, {
-            method: "POST",
-            body: JSON.stringify({
-                tag: tag,
-            }),
-        });
+        return new Promise(async (resolve) => {
+            const post_url = `${this.url}/tags`;
+            const response = await fetch(post_url, {
+                method: "POST",
+                body: JSON.stringify({ tag: tag }),
+            }).then((r) => r.json());
 
-        return this.handleJSONError(response, false);
+            if (response.error) {
+                throw response;
+            }
+
+            resolve(response);
+        });
     }
 }

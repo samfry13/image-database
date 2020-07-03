@@ -167,7 +167,7 @@ class Home extends Component {
                                         this.setState(
                                             {
                                                 selectedImage: image,
-                                                selectedImageId: image.id,
+                                                selectedImageId: image._id,
                                             },
                                             () =>
                                                 this.setState({

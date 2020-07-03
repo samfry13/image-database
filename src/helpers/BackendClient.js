@@ -8,13 +8,13 @@ export default class BackendClient {
 
     // --------------------------------------- Authentication Operations --------------------------------------------
 
-    /*
+    /**
      * Login to the database
      *
-     * @param email: string     => email of user
-     * @param password: string  => password of user
+     * @param {String} email email of user
+     * @param {String} password password of user
      *
-     * @returns a json object containing the user information and token
+     * @returns {Promise<Object>} a json object containing the user information and token
      */
     static async login(email, password) {
         return new Promise(async (resolve) => {
@@ -61,14 +61,14 @@ export default class BackendClient {
         });
     }
 
-    /*
+    /**
      * Gets the number of pages based on specific queries
      *
-     * @param pageSize: int     => amount of images on a page
-     * @param search: string    => a search query to search within the title or description
-     * @param tags: string[]    => a list of tags the results need to have
+     * @param {Number} pageSize amount of images on a page
+     * @param {String} search a search query to search within the title or description
+     * @param {Array<String>} tags a list of tags the results need to have
      *
-     * @returns a int of the amount of pages with that query
+     * @returns {Promise<Number>} a int of the amount of pages with that query
      */
     static async getImagePageNum(pageSize, search, tags) {
         return new Promise(async (resolve) => {
@@ -88,15 +88,15 @@ export default class BackendClient {
 
     // --------------------------------------- Image Operations --------------------------------------------
 
-    /*
+    /**
      * Gets all of the images with specific queries
      *
-     * @param pageSize: int     => amount of images on a page
-     * @param pageNum: int      => page number
-     * @param search: string    => a search query to search within the title or description
-     * @param tags: string[]    => a list of tags the results need to have
+     * @param {Number} pageSize amount of images on a page
+     * @param {Number} pageNum page number
+     * @param {String} search a search query to search within the title or description
+     * @param {Array<String>} tags a list of tags the results need to have
      *
-     * @returns a list of image json objects
+     * @returns {Promise<Array<Object>>} a list of image json objects
      */
     static async getAllImages(pageSize, pageNum, search, tags) {
         return new Promise(async (resolve) => {
@@ -114,12 +114,12 @@ export default class BackendClient {
         });
     }
 
-    /*
+    /**
      * Gets an image by a specified id
      *
-     * @param id: string => a unique uuid of the image
+     * @param {String} id a unique uuid of the image
      *
-     * @returns a single image json object
+     * @returns {Promise<Object>} a single image json object
      */
     static async getImage(id) {
         return new Promise(async (resolve) => {
@@ -136,15 +136,60 @@ export default class BackendClient {
         });
     }
 
+    /**
+     * Updates an image based on a specified image object
+     * 
+     * @param {object} image an updated image
+     * 
+     * @returns {Promise<Object>} a json response whether or not it was successful
+     */
+    static async updateImage(image) {
+        return new Promise(async (resolve) => {
+            const put_url = `${this.url}/image/db?id=${id}`;
+            const response = await fetch(put_url, {
+                method: "PUT",
+                body: JSON.stringify(image)
+            }).then((r) => r.json());
+
+            if (response.error) {
+                throw response;
+            }
+
+            resolve(response);
+        });
+    }
+
+    /**
+     * Deletes an image by a specified id
+     * 
+     * @param {String} id a unique uuid of the image
+     * 
+     * @returns {Promise<Object>} a json response whether or not it was successful
+     */
+    static async deleteImage(id) {
+        return new Promise(async (resolve) => {
+            const delete_url = `${this.url}/image/db?id=${id}`;
+            const response = await fetch(delete_url, {
+                method: "DELETE",
+            }).then((r) => r.json());
+
+            if (response.error) {
+                throw response;
+            }
+
+            resolve(response);
+        });
+    }
+
     // --------------------------------------- Storage Operations ----------------------------------------
     // TODO: Build out the rest of the storage operations
 
     // --------------------------------------- Tag Operations --------------------------------------------
 
-    /*
+    /**
      * Gets the list of tags as an array
      *
-     * @returns an array of tags
+     * @returns {Promise<Array<Object>>} an array of tags
      */
     static async getTags() {
         return new Promise(async (resolve) => {
@@ -161,12 +206,12 @@ export default class BackendClient {
         });
     }
 
-    /*
+    /**
      * Inserts a new tag into the database
      *
-     * @param tag: string => a new tag
+     * @param {String} tag a new tag
      *
-     * @returns a json response whether or not it was successful
+     * @returns {Promise<Object>} a json response whether or not it was successful
      */
     static async insertTag(tag) {
         return new Promise(async (resolve) => {
